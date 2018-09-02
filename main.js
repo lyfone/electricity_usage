@@ -64,6 +64,9 @@ var mailMessage = function (handledResult) {
             subject: '寝室电量情况',
             text: cfg.address.programId + cfg.address.txtyq + cfg.address.Txtroom + '电量使用情况：\n剩余电量：' + handledResult[0] + '\n' + '昨天使用电量： ' + formatFloat((handledResult[1] - handledResult[0]), 1),
         };
+
+        console.log(mailOptions.text);
+
         // send mail with defined transport object
         transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
@@ -75,8 +78,15 @@ var mailMessage = function (handledResult) {
 }
 
 function scheduleCronstyle() {
-    schedule.scheduleJob('0 0 20 * * *', function () {
+    var rule = new schedule.RecurrenceRule();
+
+    rule.second = 0;
+    rule.minute = 0;
+    rule.hour = 20;
+
+    schedule.scheduleJob(rule, function () {
         httprequest(url, requestData);
+        console.log("提醒日期: " + new Date());
     });
     console.log("寝室电量每日提醒程序运行成功...！");
 }
